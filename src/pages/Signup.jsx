@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/asset";
 import Input from "../components/Input";
+import { validateEmail } from "../util/validation";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -14,7 +15,7 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!fullName || !email || !password) {
+    if (!fullName.trim() || !validateEmail(email) || !password.trim()) {
       setError("All fields are required!");
       return;
     }
@@ -50,7 +51,7 @@ const Signup = () => {
             {error && (
               <p className="text-red-500 text-center">{error}</p>
             )}
-
+             
             <Input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
