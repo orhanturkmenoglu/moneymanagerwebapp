@@ -1,9 +1,29 @@
+import { BrowserRouter,Route, Routes } from 'react-router-dom';
 import './App.css'
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Filter from './pages/Filter';
+import Category from './pages/Category';
+import Expense from './pages/Expense';
+import Income from './pages/Income';
+import { Toaster } from 'react-hot-toast';
+import Home from './pages/Home';
 
 export default function App() {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900">
-      <h1 className="text-4xl font-bold text-white">Tailwind Çalışıyor 🚀</h1>
-    </div>
+   <>
+    <Toaster/>
+    <BrowserRouter>
+      <Routes >
+      <Route path='/dashboard' element = {<Home/>}/>
+      <Route path='/income' element = {<Income/>}/>
+      <Route path='/expense' element = {<Expense/>}/>
+      <Route path='/category' element = {<Category/>}/>
+      <Route path='/filter' element = {<Filter/>}/>
+      <Route path='/login' element = {<Login/>}/>
+      <Route path='/signup' element = {<Signup/>}/>
+      </Routes>
+    </BrowserRouter>
+   </>
   );
 }
