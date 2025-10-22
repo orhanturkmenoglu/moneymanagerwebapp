@@ -23,12 +23,6 @@ const Login = () => {
     // Burada axios veya fetch ile login request atabilirsin
     console.log({ email, password });
 
-    try{
-        axiosCon
-    }catch(error){
-
-    }
-
   };
 
   return (

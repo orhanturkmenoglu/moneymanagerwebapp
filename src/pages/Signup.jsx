@@ -3,28 +3,52 @@ import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/asset";
 import Input from "../components/Input";
 import { validateEmail } from "../util/validation";
+import axiosConfig from "../util/axiosConfig";
+import { API_ENDPOINTS } from "../util/apiEndpoints";
+import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
     if (!fullName.trim() || !validateEmail(email) || !password.trim()) {
       setError("All fields are required!");
+      setIsLoading(false);
       return;
     }
 
-    // Burada axios veya fetch ile signup request atabilirsin
-    console.log({ fullName, email, password });
+    try {
+      const response = await axiosConfig.post(API_ENDPOINTS.REGISTER, {
+        fullName,
+        email,
+        password,
+      });
 
-    // Başarılı ise login sayfasına yönlendir
-    navigate("/login");
+      if (response.status === 201 || response.status === 200) {
+        toast.success("Profile created successfully!");
+        navigate("/login");
+      } else {
+        setError("Unexpected response from server.");
+      }
+    } catch (err) {
+      console.error("Something went wrong:", err);
+      setError(
+        err.response?.data?.message || "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -48,10 +72,8 @@ const Signup = () => {
           </p>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {error && (
-              <p className="text-red-500 text-center">{error}</p>
-            )}
-             
+            {error && <p className="text-red-500 text-center">{error}</p>}
+
             <Input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -78,9 +100,21 @@ const Signup = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors"
+              className={`w-full bg-blue-500 hover:bg-blue-600
+               text-white font-semibold py-2 px-4 rounded transition-colors
+               flex items-center justify-center gap-2 ${
+                 isLoading ? "opacity-60 cursor-not-allowed" : ""
+               }`}
+              disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? (
+                <>
+                  <LoaderCircle className="animate-spin w-5 h-5" />
+                  Signing Up...
+                </>
+              ) : (
+                "Sign Up"
+              )}
             </button>
 
             <p className="text-sm text-center text-slate-600 mt-4">

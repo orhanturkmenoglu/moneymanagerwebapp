@@ -20,7 +20,7 @@ const excludeEndpoints = [
 axiosConfig.interceptors.request.use(
   (config) => {
     const shouldSkipToken = excludeEndpoints.some((endpoint) => {
-      config.url?.includes(endpoint);
+      return config.url?.includes(endpoint);
     });
 
     if (!shouldSkipToken) {
@@ -29,7 +29,7 @@ axiosConfig.interceptors.request.use(
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
-    console.log("config :",config);
+    console.log("config :", config);
     return config;
   },
   (error) => {
@@ -39,7 +39,7 @@ axiosConfig.interceptors.request.use(
 
 axiosConfig.interceptors.response.use(
   (response) => {
-    console.log("response :",response);
+    console.log("response :", response);
     return response;
   },
   (error) => {
@@ -47,9 +47,12 @@ axiosConfig.interceptors.response.use(
       window.location.href = "/login";
     } else if (error.response.status === 500) {
       console.log("Server error.Please try again later");
-    } else if(error.code ==="ECONNABORTED"){
-        console.log("Request timeout.Please try again.");
+    } else if (error.code === "ECONNABORTED") {
+      console.log("Request timeout.Please try again.");
     }
     return Promise.reject(error);
   }
 );
+
+
+export default axiosConfig;
