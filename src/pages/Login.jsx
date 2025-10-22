@@ -1,28 +1,63 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { assets } from '../assets/asset';
-import Input from '../components/Input';
-import { validateEmail } from '../util/validation';
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { assets } from "../assets/asset";
+import Input from "../components/Input";
+import { validateEmail } from "../util/validation";
+import axiosConfig from "../util/axiosConfig";
+import { API_ENDPOINTS } from "../util/apiEndpoints";
+import toast from "react-hot-toast";
+import { AppContext } from "../context/AppContext";
+import { LoaderCircle } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useContext(AppContext);
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
-    if (!validateEmail(email) || !password) {
+    if (!validateEmail(email) || !password.trim()) {
       setError("All fields are required!");
+      setIsLoading(false);
       return;
     }
 
-    setError("");
-    // Burada axios veya fetch ile login request atabilirsin
-    console.log({ email, password });
+    try {
+      const response = await axiosConfig.post(API_ENDPOINTS.LOGIN, {
+        email,
+        password,
+      });
 
+      const { token, user } = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        setUser(user);
+        toast.success("Login successful!");
+        navigate("/dashboard");
+      } else {
+        setError("Invalid response from server.");
+      }
+    } catch (err) {
+      if (error.response && error.response.data.message) {
+        setError(
+          err.response?.data?.message ||
+            "Invalid credentials. Please try again."
+        );
+      } else {
+        console.error("Something went wrong:", err);
+        setError(error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -66,9 +101,21 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors"
+              className={`w-full bg-blue-500 hover:bg-blue-600
+               text-white font-semibold py-2 px-4 rounded transition-colors
+               flex items-center justify-center gap-2 ${
+                 isLoading ? "opacity-60 cursor-not-allowed" : ""
+               }`}
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? (
+                <>
+                  <LoaderCircle className="animate-spin w-5 h-5" />
+                  Logging in...
+                </>
+              ) : (
+                "LOGIN"
+              )}
             </button>
 
             <p className="text-sm text-center text-slate-600 mt-4">
