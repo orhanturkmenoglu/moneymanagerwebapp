@@ -7,11 +7,14 @@ import axiosConfig from "../util/axiosConfig";
 import { API_ENDPOINTS } from "../util/apiEndpoints";
 import toast from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
+import ProfilePhotoSelector from "../components/ProfilePhotoSelector";
+import uploadProfileImage from "../util/uploadProfileImage";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [profilPhoto, setProfilPhoto] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -19,7 +22,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    let profileImageUrl = "";
     setIsLoading(true);
 
     if (!fullName.trim() || !validateEmail(email) || !password.trim()) {
@@ -29,10 +32,17 @@ const Signup = () => {
     }
 
     try {
+      if (profilPhoto) {
+        const imageUrl = await uploadProfileImage(profilPhoto);
+        console.log("IMAGE URL", imageUrl);
+        profileImageUrl = imageUrl || "";
+        console.log("profilImageUrl ", profileImageUrl);
+      }
       const response = await axiosConfig.post(API_ENDPOINTS.REGISTER, {
         fullName,
         email,
         password,
+        profileImageUrl,
       });
 
       if (response.status === 201 || response.status === 200) {
@@ -73,7 +83,12 @@ const Signup = () => {
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             {error && <p className="text-red-500 text-center">{error}</p>}
-
+            <div className="flex justify-center mb-6">
+              <ProfilePhotoSelector
+                image={profilPhoto}
+                setImage={setProfilPhoto}
+              />
+            </div>
             <Input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
