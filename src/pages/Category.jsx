@@ -1,10 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Dashboard from "../components/Dashboard";
 import { useUser } from "../hooks/useUser";
 import { Plus } from "lucide-react";
+import CategoryList from "../components/CategoryList";
+import axiosConfig from "../util/axiosConfig";
+import { API_ENDPOINTS } from "../util/apiEndpoints";
+import toast from "react-hot-toast";
 
 const Category = () => {
   useUser();
+
+  const [loading,setLoading] = useState(null);
+  const [categoryData,setCategoryData] = useState([]);
+  const [openAddCategoryModal,setOpenAddCategoryModal] = useState(false);
+  const [openEditCategoryModal,setOpenEditCategoryModal] = useState(false);
+  const [selectedCategory,setSelectedCategory] = useState(null);
+
+  const fetchCategoryDetails = async() =>{
+
+    if(loading) return;
+    
+    setLoading(true);
+
+    try {
+      const response = await axiosConfig(API_ENDPOINTS.GET_ALL_CATEGORIES);
+      if (response.status === 200) {
+        console.log("categories",response.data);
+        setCategoryData(response.data);
+      }
+    } catch (error) {
+      console.log("Something went wrong.Please try again.",error);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(()=>{
+    fetchCategoryDetails();
+  },[])
 
   return (
     <Dashboard activeMenu="Category">
@@ -29,6 +63,7 @@ const Category = () => {
             No categories yet. Click “Add Category” to create one.
           </p>
         </div>
+        <CategoryList categories = {categoryData} />
       </div>
     </Dashboard>
   );
