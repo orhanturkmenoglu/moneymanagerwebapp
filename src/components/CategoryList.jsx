@@ -3,38 +3,30 @@ import React from "react";
 
 const CategoryList = ({ categories, onEditCategory, onDeleteCategory }) => {
   return (
-    <div className="card py-4">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm py-4 px-5">
       <div className="flex items-center justify-between mb-4">
-        <h4 className="text-lg font-semibold">Category Sources</h4>
+        <h4 className="text-lg font-semibold text-gray-800">Category Sources</h4>
       </div>
 
       {/* Category list */}
       {categories.length === 0 ? (
-        <p className="text-gray-500">
-          No Categories added yet. Add some to get started!
+        <p className="text-gray-500 text-sm">
+          No categories added yet. Add some to get started!
         </p>
       ) : (
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2
-            md:grid-cols-3 gap-4"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="group relative flex items-center gap-4 p-3 rounded-lg hover:bg-gray-100 transition-colors"
+              className="group flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200"
             >
-              <div
-                className="w-12 h-12 flex items-center justify-center text-xl text-gray-800
-            bg-gray-100 rounded-full"
-              >
+              <div className="w-12 h-12 flex items-center justify-center text-gray-800 bg-gray-100 rounded-full">
                 {category.icon ? (
-                  <span className="text-2xl">
-                    <img
-                      className="h-5 w-5"
-                      src={category.icon}
-                      alt={category.name}
-                    />
-                  </span>
+                  <img
+                    className="h-5 w-5"
+                    src={category.icon}
+                    alt={category.name}
+                  />
                 ) : (
                   <Layers2 className="text-purple-800" size={24} />
                 )}
@@ -54,8 +46,8 @@ const CategoryList = ({ categories, onEditCategory, onDeleteCategory }) => {
                 {/* action buttons */}
                 <div className="flex items-center gap-2">
                   <button
-                    className="text-gray-400 hover:text-blue-500 opacity-0 
-                    group-hover:opacity-100 transition-opacity cursor-pointer"
+                    onClick={() => onEditCategory && onEditCategory(category)}
+                    className="text-gray-400 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
                   >
                     <Pencil size={18} />
                   </button>
