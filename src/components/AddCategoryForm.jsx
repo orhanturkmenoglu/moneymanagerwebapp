@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Input from "./Input";
+import EmojiPickerPopup from "./EmojiPickerPopup";
 
 const AddCategoryForm = () => {
   const [category, setCategory] = useState({
@@ -19,18 +20,32 @@ const AddCategoryForm = () => {
     },
   ];
 
-  const handleChange = (key,value)=>{
-    setCategory({...category,[key]:value})
-  }
+  const handleChange = (key, value) => {
+    setCategory({ ...category, [key]: value });
+    console.log(category);
+  };
 
   return (
     <div>
-      <Input 
-      value={category.name}
-      onChange={(target)=>handleChange("name",target.value)}
-      label="Category Name"
-      placeHolder="e.g.,Freelance,Salary,Bonus"
-      type="text" />
+      <EmojiPickerPopup
+        icon={category.icon}
+        onSelect={(selectedIcon) => handleChange("icon", selectedIcon)}
+      />
+      <Input
+        value={category.name}
+        onChange={({ target }) => handleChange("name", target.value)}
+        label="Category Name"
+        placeHolder="e.g.,Freelance,Salary,Bonus"
+        type="text"
+      />
+
+      <Input
+        label="Category Type"
+        value={category.type}
+        onChange={({ target }) => handleChange("type", target.value)}
+        isSelect={true}
+        options={categoryOptions}
+      />
     </div>
   );
 };
