@@ -38,12 +38,48 @@ const Category = () => {
     fetchCategoryDetails();
   }, []);
 
+  const handleAddCategory = async (category) => {
+    const { name, type, icon } = category;
+
+    if (!name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+
+    const isDuplicate = categoryData.some((category) => {
+      return category.name.toLowerCase() === name.trim().toLowerCase();
+    });
+
+    if(isDuplicate){
+      toast.error("Category name already exists");
+      return;
+    }
+    
+    try {
+      const response = await axiosConfig.post(API_ENDPOINTS.ADD_CATEGORIES, {
+        name,
+        type,
+        icon,
+      });
+
+      if (response.status === 201) {
+        toast.success("Category added successfuly");
+        setOpenAddCategoryModal(false);
+        fetchCategoryDetails();
+      }
+    } catch (error) {
+      console.log("Error adding category :", error);
+      toast.error(error.response?.data?.message || "Failed to add category");
+    }
+  };
   return (
     <Dashboard activeMenu="Category">
       <div className="my-6 mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">All Categories</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">
+            All Categories
+          </h2>
           <button
             onClick={() => setOpenAddCategoryModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-purple-700 text-white rounded-lg shadow-sm hover:bg-purple-800 transition-all duration-200"
@@ -54,18 +90,16 @@ const Category = () => {
         </div>
 
         {/* Kategori Listesi */}
-        <CategoryList
-          categories={categoryData}
-        />
+        <CategoryList categories={categoryData} />
 
         {/* Modal */}
-          <Modal 
+        <Modal
           isOpen={openAddCategoryModal}
-          onClose={()=>setOpenAddCategoryModal(false)}
-          title="Add Category">
-            <AddCategoryForm/>
-          </Modal>
-      
+          onClose={() => setOpenAddCategoryModal(false)}
+          title="Add Category"
+        >
+          <AddCategoryForm onAddCategory={handleAddCategory} />
+        </Modal>
       </div>
     </Dashboard>
   );
