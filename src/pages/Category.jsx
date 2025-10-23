@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import Dashboard from '../components/Dashboard'
 
 const Category = () => {
-  return (
-    <div>Category</div>
-  )
-}
+  return <Dashboard activeMenu="Category">This Category page</Dashboard>;
+};
 
-export default Category
+export default Category;
