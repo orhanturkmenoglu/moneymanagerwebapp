@@ -15,6 +15,7 @@ const Category = () => {
   const [loading, setLoading] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [openAddCategoryModal, setOpenAddCategoryModal] = useState(null);
+  const [openEditCategoryModal, setOpenEditCategoryModal] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const fetchCategoryDetails = async () => {
@@ -50,11 +51,11 @@ const Category = () => {
       return category.name.toLowerCase() === name.trim().toLowerCase();
     });
 
-    if(isDuplicate){
+    if (isDuplicate) {
       toast.error("Category name already exists");
       return;
     }
-    
+
     try {
       const response = await axiosConfig.post(API_ENDPOINTS.ADD_CATEGORIES, {
         name,
@@ -72,6 +73,42 @@ const Category = () => {
       toast.error(error.response?.data?.message || "Failed to add category");
     }
   };
+
+  const handleEditCategory = (categoryToEdit) => {
+    console.log("Edit category clicked", categoryToEdit);
+    setSelectedCategory(categoryToEdit);
+    setOpenEditCategoryModal(true);
+  };
+
+  const handleUpdateCategory = async (updatedCategory) => {
+    console.log("Update category clicked", updatedCategory);
+    const { id, name, type, icon } = updatedCategory;
+
+    if (!name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+
+    if (!id) {
+      toast.error("Category id is missing");
+      return;
+    }
+    try {
+      await axiosConfig.put(API_ENDPOINTS.UPDATE_CATEGORY(id), {
+        name,
+        type,
+        icon,
+      });
+      setOpenEditCategoryModal(false);
+      setSelectedCategory(null);
+      toast.success("Category updated successfully");
+      fetchCategoryDetails();
+    } catch (error) {
+      console.log("Error updating category :", error);
+      toast.error(error.response?.data?.message || "Failed to update category");
+    }
+  };
+
   return (
     <Dashboard activeMenu="Category">
       <div className="my-6 mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,7 +127,10 @@ const Category = () => {
         </div>
 
         {/* Kategori Listesi */}
-        <CategoryList categories={categoryData} />
+        <CategoryList
+          categories={categoryData}
+          onEditCategory={handleEditCategory}
+        />
 
         {/* Modal */}
         <Modal
@@ -99,6 +139,22 @@ const Category = () => {
           title="Add Category"
         >
           <AddCategoryForm onAddCategory={handleAddCategory} />
+        </Modal>
+
+        {/* update category modal */}
+        <Modal
+          isOpen={openEditCategoryModal}
+          onClose={() => {
+            setOpenEditCategoryModal(false);
+            setSelectedCategory(null);
+          }}
+          title="Update Category"
+        >
+          <AddCategoryForm
+            initialCategoryData={selectedCategory}
+            onAddCategory={handleUpdateCategory}
+            isEditing={true}
+          />
         </Modal>
       </div>
     </Dashboard>
