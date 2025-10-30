@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmojiPickerPopup from "./EmojiPickerPopup";
 import Input from "./Input";
 import toast from "react-hot-toast";
@@ -79,6 +79,13 @@ const AddIncomeForm = ({ onAddIncome, categories }) => {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    if(categories.length > 0 && !income.categoryId) {
+      setIncome((prev) => ({ ...prev, categoryId: categories[0].id }));
+    }
+  }, [categories, income.categoryId]);
 
   return (
     <div className="space-y-5">
