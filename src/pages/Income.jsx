@@ -8,6 +8,7 @@ import Modal from "../components/Modal";
 import { Plus } from "lucide-react";
 import AddIncomeForm from "../components/AddIncomeForm";
 import toast from "react-hot-toast";
+import DeleteAlert from "../components/DeleteAlert";
 
 const Income = () => {
   useUser();
@@ -101,6 +102,23 @@ const Income = () => {
     }
   };
 
+  // 🔹 Delete income details
+  const deleteIncome = async (incomeId) => {
+    setLoading(true);
+    try {
+       await axiosConfig.delete(API_ENDPOINTS.DELETE_INCOME(incomeId));
+       setOpenDeleteAlert({show:false,data:null});
+        toast.success("Income deleted successfully");
+        await fetchIncomeDetails();
+
+    } catch (error) {
+      console.error("❌ Error deleting income:", error);
+      toast.error(error?.response?.data?.message || "Failed to delete income");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // 🔹 Initial data fetch
   useEffect(() => {
     fetchIncomeDetails();
@@ -131,7 +149,7 @@ const Income = () => {
           {/* Income List */}
           <IncomeList
             transactions={incomeData}
-            onDelete={(id) => console.log("Deleting income with id:", id)}
+            onDelete={(id) => setOpenDeleteAlert({show:true,data:id})}
           />
 
           {/* Add Income Modal */}
@@ -146,6 +164,16 @@ const Income = () => {
                 categories={categories}
               />
             </div>
+          </Modal>
+
+          {/* Delete Income Modal */}
+          <Modal
+          isOpen={openDeleteAlert.show}
+          onClose={()=>setOpenDeleteAlert({show:false,data:null})}
+          title="Delete Income">
+            <DeleteAlert
+            content="Are you sure want to delete this income details"
+            onDelete={()=>deleteIncome(openDeleteAlert.data)}/>
           </Modal>
         </div>
       </div>
