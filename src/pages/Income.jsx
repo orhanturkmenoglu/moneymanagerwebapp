@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 import AddIncomeForm from "../components/AddIncomeForm";
 import toast from "react-hot-toast";
 import DeleteAlert from "../components/DeleteAlert";
+import IncomeOverview from "../components/IncomeOverview";
 
 const Income = () => {
   useUser();
@@ -106,11 +107,10 @@ const Income = () => {
   const deleteIncome = async (incomeId) => {
     setLoading(true);
     try {
-       await axiosConfig.delete(API_ENDPOINTS.DELETE_INCOME(incomeId));
-       setOpenDeleteAlert({show:false,data:null});
-        toast.success("Income deleted successfully");
-        await fetchIncomeDetails();
-
+      await axiosConfig.delete(API_ENDPOINTS.DELETE_INCOME(incomeId));
+      setOpenDeleteAlert({ show: false, data: null });
+      toast.success("Income deleted successfully");
+      await fetchIncomeDetails();
     } catch (error) {
       console.error("❌ Error deleting income:", error);
       toast.error(error?.response?.data?.message || "Failed to delete income");
@@ -130,10 +130,12 @@ const Income = () => {
       <div className="my-5 mx-auto max-w-4xl">
         <div className="grid grid-cols-1 gap-6">
           {/* Header & Add Income Button */}
+          
           <div className="flex justify-between items-center">
+         
             <div className="bg-white p-4 rounded-2xl shadow-md border border-gray-100 w-full flex justify-between items-center">
               <span className="text-gray-700 font-medium text-sm">
-                Income Overview
+                 <IncomeOverview transactions={incomeData} />
               </span>
               <button
                 onClick={() => setOpenAddIncomeModal(true)}
@@ -149,7 +151,7 @@ const Income = () => {
           {/* Income List */}
           <IncomeList
             transactions={incomeData}
-            onDelete={(id) => setOpenDeleteAlert({show:true,data:id})}
+            onDelete={(id) => setOpenDeleteAlert({ show: true, data: id })}
           />
 
           {/* Add Income Modal */}
@@ -168,12 +170,14 @@ const Income = () => {
 
           {/* Delete Income Modal */}
           <Modal
-          isOpen={openDeleteAlert.show}
-          onClose={()=>setOpenDeleteAlert({show:false,data:null})}
-          title="Delete Income">
+            isOpen={openDeleteAlert.show}
+            onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+            title="Delete Income"
+          >
             <DeleteAlert
-            content="Are you sure want to delete this income details"
-            onDelete={()=>deleteIncome(openDeleteAlert.data)}/>
+              content="Are you sure want to delete this income details"
+              onDelete={() => deleteIncome(openDeleteAlert.data)}
+            />
           </Modal>
         </div>
       </div>
