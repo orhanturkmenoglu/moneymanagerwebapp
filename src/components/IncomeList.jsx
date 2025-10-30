@@ -1,8 +1,29 @@
-import { Download, Mail } from "lucide-react";
+import { Download, LoaderCircle, Mail } from "lucide-react";
 import TransactionInfoCard from "./TransactionInfoCard";
 import moment from "moment";
+import { useState } from "react";
 
-const IncomeList = ({ transactions = [], onDelete }) => {
+const IncomeList = ({ transactions, onDelete, onDownload, onEmail }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleEmail = async () => {
+    setLoading(true);
+    try {
+      await onEmail();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    setLoading(true);
+    try {
+      await onDownload();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 transition-all hover:shadow-lg">
       {/* Header */}
@@ -15,13 +36,39 @@ const IncomeList = ({ transactions = [], onDelete }) => {
         </h5>
 
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 px-3.5 py-2 rounded-xl hover:bg-green-100 hover:text-green-800 transition-all">
-            <Mail size={16} />
-            Email
+          <button
+            disabled={loading}
+            onClick={handleEmail}
+            className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 px-3.5 py-2 rounded-xl hover:bg-green-100 hover:text-green-800 transition-all"
+          >
+            {loading ? (
+              <>
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+                Emailing...
+              </>
+            ) : (
+              <>
+                <Mail size={16} className="text-base" />
+                Email
+              </>
+            )}
           </button>
 
-          <button className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 px-3.5 py-2 rounded-xl hover:bg-green-100 hover:text-green-800 transition-all">
-            <Download size={16} />
+          <button
+            disabled={loading}
+            onClick={handleDownload}
+            className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 px-3.5 py-2 rounded-xl hover:bg-green-100 hover:text-green-800 transition-all"
+          >
+            {loading ? (
+              <>
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+                Downloading...
+              </>
+            ) : (
+              <>
+                <Download size={15} className="text-base" />
+              </>
+            )}
             Download
           </button>
         </div>
