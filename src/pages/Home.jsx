@@ -105,7 +105,7 @@ const Home = () => {
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value) => `₹${addThousandSeparators(value)}`}
+                      formatter={(value) => `$${addThousandSeparators(value)}`}
                     />
                     <Legend />
                   </PieChart>
@@ -129,7 +129,7 @@ const Home = () => {
                       >
                         <span>{income.name}</span>
                         <span className="font-medium text-green-700">
-                          ₹{addThousandSeparators(income.amount)}
+                          ${addThousandSeparators(income.amount)}
                         </span>
                       </div>
                     ))}

@@ -14,7 +14,7 @@ const InfoCard = ({ icon, label, value, color }) => {
           {label}
         </h6>
         <span className="text-[22px] font-semibold text-gray-800 mt-1">
-          &#8377;{value?.toLocaleString("tr-TR")}
+          ${value?.toLocaleString("tr-TR")}
         </span>
       </div>
     </div>

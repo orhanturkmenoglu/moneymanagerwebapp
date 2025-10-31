@@ -61,7 +61,6 @@ const AddIncomeForm = ({ onAddIncome, categories }) => {
     setLoading(true);
     try {
       await onAddIncome(income);
-
       await new Promise((r) => setTimeout(r, 400));
       toast.success("Income added successfully!");
 

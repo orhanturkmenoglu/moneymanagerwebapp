@@ -57,7 +57,7 @@ const FinanceOverview = ({
               formatter={(value) =>
                 totalBalance + totalIncome + totalExpense === 0
                   ? `${value}`
-                  : `₹${addThousandSeparators(value)}`
+                  : `$${addThousandSeparators(value)}`
               }
             />
             <Legend />
@@ -66,7 +66,7 @@ const FinanceOverview = ({
       </div>
 
       <p className="text-gray-500 text-sm mt-4">
-        Total Balance: ₹{addThousandSeparators(totalBalance)}
+        Total Balance: ${addThousandSeparators(totalBalance)}
       </p>
     </div>
   );
