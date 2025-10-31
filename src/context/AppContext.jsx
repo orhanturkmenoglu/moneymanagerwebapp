@@ -5,7 +5,8 @@ export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  
+  const [token,setToken] = useState("");
+
   const clearUser = ()=>{
     setUser(null);
   }
@@ -13,7 +14,9 @@ export const AppContextProvider = ({ children }) => {
   const contextValue = {
     user,
     setUser,
-    clearUser
+    clearUser,
+    token,
+    setToken
   };
 
   return (

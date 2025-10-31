@@ -14,7 +14,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useContext(AppContext);
+  const { setUser,setToken} = useContext(AppContext);
+
 
   const navigate = useNavigate();
 
@@ -36,10 +37,10 @@ const Login = () => {
       });
 
       const { token, user } = response.data;
-
       if (token) {
         localStorage.setItem("token", token);
         setUser(user);
+        setToken(response.data.token);
         toast.success("Login successful!");
         navigate("/dashboard");
       } else {
