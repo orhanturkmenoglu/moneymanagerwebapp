@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import CustomLineChart from "./CustomLineChart";
-import { Minus } from "lucide-react";
 
-const ExpenseOverview = ({ transactions }) => {
+const ExpenseOverview = ({ transactions = [] }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    if (transactions && transactions.length > 0) {
+    if (transactions.length > 0) {
       const result = prepareExpenseLineChartData(transactions);
       setChartData(result);
     } else {
@@ -40,6 +39,9 @@ const ExpenseOverview = ({ transactions }) => {
     }));
   };
 
+  // Tüm değerler boşsa fallback
+  const isEmpty = chartData.length === 0;
+
   return (
     <div className="card bg-white border border-gray-100 rounded-2xl shadow-md p-5 w-full">
       <div>
@@ -50,12 +52,12 @@ const ExpenseOverview = ({ transactions }) => {
       </div>
 
       <div className="mt-6 h-64">
-        {chartData.length > 0 ? (
-          <CustomLineChart data={chartData} />
-        ) : (
-          <div className="flex justify-center items-center h-full text-gray-400 text-sm">
+        {isEmpty ? (
+          <div className="flex justify-center items-center h-full text-gray-400 text-sm italic">
             No expense data available
           </div>
+        ) : (
+          <CustomLineChart data={chartData} />
         )}
       </div>
     </div>
