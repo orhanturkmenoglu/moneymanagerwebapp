@@ -1,4 +1,4 @@
-import logo from "../assets/logo.png";
+import logo from "../assets/reduction.png";
 import login_bg from "../assets/login-bg.jpg";
 import { Coins, FunnelPlus, LayoutDashboard, List, Wallet } from "lucide-react";
 
