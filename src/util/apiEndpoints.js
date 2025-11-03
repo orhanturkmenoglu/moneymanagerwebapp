@@ -1,4 +1,4 @@
-export const BASE_URL = "https://money-manager-fullstack.onrender.com";
+export const BASE_URL = "https://money-manager-fullstack.onrender.com/api/v1.0";
 
 export const CLOUDINARY_CLOUD_NAME = "dnxdum35d";
 
